@@ -29,6 +29,11 @@ module.exports = {
         body('password').notEmpty().withMessage().isStrongPassword(options.password).withMessage(`password dai it nhat ${options.password.minLength} ki tu, trong do co it nhat ${options.password.minNumbers} so ${options.password.minUppercase} chu hoa ${options.password.minLowercase} chu thuong ${options.password.minSymbols} ki tu dac biet`),
     ]
     ,
+        ChangPasswordValidator: [
+        body('oldpassword').notEmpty().withMessage("old password khong duoc de trong"),
+        body('newpassword').notEmpty().withMessage("new password khong duoc de trong").bail().isStrongPassword(options.password).withMessage(`password dai it nhat ${options.password.minLength} ki tu, trong do co it nhat ${options.password.minNumbers} so ${options.password.minUppercase} chu hoa ${options.password.minLowercase} chu thuong ${options.password.minSymbols} ki tu dac biet`),
+    ]
+    ,
     handleResultValidator: function (req, res, next) {
         let result = validationResult(req);
         if (result.errors.length > 0) {

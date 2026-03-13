@@ -1,16 +1,17 @@
 var express = require("express");
 var router = express.Router();
-let { checkLogin } = require('../utils/authHandler')
+let { checkLogin, CheckPermission } = require('../utils/authHandler')
 let { userCreateValidator
     , userUpdateValidator
     , handleResultValidator } = require('../utils/validatorHandler')
 let userController = require("../controllers/users");
 
 
-router.get("/", checkLogin, async function (req, res, next) {
-    let users = await userController.GetAllUser();
-    res.send(users);
-});
+router.get("/", checkLogin, CheckPermission("ADMIN")
+    , async function (req, res, next) {
+        let users = await userController.GetAllUser();
+        res.send(users);
+    });
 
 router.get("/:id", async function (req, res, next) {
     try {
