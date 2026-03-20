@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 let slugify = require('slugify')
 let productSchema = require('../schemas/products')
+let inventoryModel = require('../schemas/inventories')
 //mongoose --- mongoDB
 
 /* GET users listing. */
@@ -66,6 +67,17 @@ router.post('/', async function (req, res, next) {
       images: req.body.images
     })
     await newObj.save()
+
+    // Create inventory for this new product
+    try {
+      await inventoryModel.create({ product: newObj._id })
+    } catch (invErr) {
+      // Ignore duplicate key errors (in case inventory already exists)
+      if (!(invErr && invErr.code === 11000)) {
+        throw invErr
+      }
+    }
+
     res.send(newObj);
   } catch (error) {
     res.status(404).send(error.message);
